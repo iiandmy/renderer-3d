@@ -1,7 +1,6 @@
-package iofile;
+package iofile.reader;
 
 import java.io.*;
-import java.util.stream.Stream;
 
 public class FileReaderImpl implements FileReader {
     private BufferedReader bufferedReader;
@@ -18,5 +17,10 @@ public class FileReaderImpl implements FileReader {
     @Override
     public void closeFile() throws IOException {
         this.bufferedReader.close();
+    }
+
+    @Override
+    public String nextLine() throws IOException {
+        return this.bufferedReader.readLine();
     }
 }
