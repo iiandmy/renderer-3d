@@ -1,10 +1,8 @@
 package iofile.reader;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 public interface FileReader {
-    void openFile(String filePath) throws FileNotFoundException;
-    String nextLine() throws IOException;
-    void closeFile() throws IOException;
+    List<String> readFile(String path) throws IOException;
 }

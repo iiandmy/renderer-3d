@@ -1,26 +1,19 @@
 package iofile.reader;
 
 import java.io.*;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class FileReaderImpl implements FileReader {
-    private BufferedReader bufferedReader;
-
-    public FileReaderImpl() {}
 
     @Override
-    public void openFile(String path) throws FileNotFoundException {
-        this.bufferedReader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(path))
-        );
-    }
-
-    @Override
-    public void closeFile() throws IOException {
-        this.bufferedReader.close();
-    }
-
-    @Override
-    public String nextLine() throws IOException {
-        return this.bufferedReader.readLine();
+    public List<String> readFile(String path) throws IOException {
+        List<String> lines = null;
+        try (
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(path)))
+        ) {
+            lines = bufferedReader.lines().toList();
+        }
+        return lines;
     }
 }
