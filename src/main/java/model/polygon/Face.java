@@ -1,12 +1,12 @@
-package model;
+package model.polygon;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class Vertex {
-    public double x;
-    public double y;
-    public double z;
+@Data
+public class Face {
+    public VertexData[] vertices;
 }
