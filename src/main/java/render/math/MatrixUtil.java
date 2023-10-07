@@ -15,12 +15,22 @@ public class MatrixUtil {
         }
         return result;
     }
+    
     public static Vector multiply4MatrixVec(double[][] m, Vector v) {
         return new Vector(
                   m[0][0] * v.getX() + m[0][1] * v.getY() + m[0][2] * v.getZ() + m[0][3] * v.getW(),
                 m[1][0] * v.getX() + m[1][1] * v.getY() + m[1][2] * v.getZ() + m[1][3] * v.getW(),
                 m[2][0] * v.getX() + m[2][1] * v.getY() + m[2][2] * v.getZ() + m[2][3] * v.getW(),
                 m[3][0] * v.getX() + m[3][1] * v.getY() + m[3][2] * v.getZ() + m[3][3] * v.getW()
+        );
+    }
+
+    public static Vector multiply2MatrixVec2(double[][] m, Vector v) {
+        return new Vector(
+            m[0][0] * v.getX() + m[0][1] * v.getY(),
+            m[1][0] * v.getX() + m[1][1] * v.getY(),
+            v.getZ(),
+            v.getW()
         );
     }
 
@@ -38,6 +48,15 @@ public class MatrixUtil {
                 {sx, 0, 0, 0},
                 {0, sy, 0, 0},
                 {0, 0, sz, 0},
+                {0, 0, 0, 1}
+        };
+    }
+
+    public static double[][] getUnitMatrix() {
+        return new double[][] {
+                {1, 0, 0, 0},
+                {0, 1, 0, 0},
+                {0, 0, 1, 0},
                 {0, 0, 0, 1}
         };
     }
@@ -86,6 +105,52 @@ public class MatrixUtil {
                 {XAxis.getY(), YAxis.getY(), ZAxis.getY(), Translate.getY()},
                 {XAxis.getZ(), YAxis.getZ(), ZAxis.getZ(), Translate.getZ()},
                 {0, 0, 0, 1}
+        };
+    }
+
+    // aspect = width / height
+    public static double[][] getProjectionMatrix(
+        double aspect,
+        double FOV,
+        double zNear,
+        double zFar
+    ) {
+        return new double[][] {
+            {1/(aspect * Math.tan(FOV/2)), 0, 0, 0},
+            {0, 1/Math.tan(FOV/2), 0, 0},
+            {0, 0, zFar/(zNear - zFar), (zNear * zFar)/(zNear - zFar)},
+            {0, 0, -1, 0}
+        };
+    }
+    
+    public static double[][] getViewMatrix(
+            Vector v,
+            Vector camPos,
+            Vector up
+    ) {
+        Vector ZAxis = Vector.sub(camPos, v).normalize();
+        Vector XAxis = Vector.mul(up, ZAxis).normalize();
+        Vector YAxis = Vector.mul(ZAxis, XAxis).normalize();
+
+        return new double[][] {
+                {XAxis.getX(), XAxis.getY(), XAxis.getZ(), -Vector.scalMul(XAxis, camPos)},
+                {YAxis.getX(), YAxis.getY(), YAxis.getZ(), -Vector.scalMul(YAxis, camPos)},
+                {ZAxis.getX(), ZAxis.getY(), ZAxis.getZ(), -Vector.scalMul(ZAxis, camPos)},
+                {0, 0, 0, 1}
+        };
+    }
+
+    public static double[][] getViewportMatrix(
+        double width,
+        double height,
+        double xMin,
+        double yMin
+    ) {
+        return new double[][] {
+            {width/2, 0, 0, xMin + (width/2)},
+            {0, -height/2, 0, yMin + (height/2)},
+            {0, 0, 1, 0},
+            {0, 0, 0, 1}
         };
     }
 }

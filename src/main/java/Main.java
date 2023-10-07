@@ -12,23 +12,41 @@ public class Main {
     public static void main(String[] args) throws IOException {
         ObjFileParser parser = new ObjFileParser();
         FileReader reader = new FileReaderImpl();
-        parser.setFileLines(reader.readFile("C:\\Users\\olegb\\OneDrive\\Рабочий стол\\model\\cube.obj"));
+        parser.setFileLines(reader.readFile("/home/ilya/Документы/Projects/cube.obj"));
         GeometricObject[] objects = parser.parseFile();
 
         JFrame frame = new JFrame();
         Container pane = frame.getContentPane();
+  
         pane.setLayout(new BorderLayout());
+        pane.setVisible(true);
 
         JSlider headingSlider = new JSlider(0, 360, 180);
         pane.add(headingSlider, BorderLayout.SOUTH);
 
-        JSlider pitchSlider = new JSlider(SwingConstants.VERTICAL, -90, 90, 0);
+        JSlider pitchSlider = new JSlider(SwingConstants.VERTICAL, 0, 360, 180);
         pane.add(pitchSlider, BorderLayout.EAST);
 
-        JPanel renderPanel = new RenderPanel(objects);
+        RenderPanel renderPanel = new RenderPanel(objects);
+
+        renderPanel.addMouseWheelListener(e -> {
+            int notches = -e.getWheelRotation();
+            renderPanel.setCurrentScale(renderPanel.getCurrentScale() + notches);
+            renderPanel.repaint();
+        });
+        headingSlider.addChangeListener((listener) -> {
+            double val = headingSlider.getValue();
+            renderPanel.setRotationAngleY(val);
+            renderPanel.repaint();
+        });
+        pitchSlider.addChangeListener((listener) -> {
+            double val = pitchSlider.getValue();
+            renderPanel.setRotationAngleX(val);
+            renderPanel.repaint();
+        });
 
         pane.add(renderPanel, BorderLayout.CENTER);
-        frame.setSize(600, 600);
+        frame.setSize(1000, 600);
         frame.setVisible(true);
     }
 }
